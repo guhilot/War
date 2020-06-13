@@ -34,3 +34,32 @@ card_deck = cardDeck()
 card_deck.shuffleDeck()
 hand1, hand2 = card_deck.serveCards()
 #print(hand1)
+
+class playerHand():
+    def __init__(self, hand):
+        self.hand = hand
+
+    def show(self):
+        return self.hand
+
+player1hand = playerHand(hand1)
+player2hand = playerHand(hand2)
+
+#print(player1.show())
+#print(player2.show())
+
+class Warriors():
+    def __init__(self, clan, player):
+        self.clan = clan
+        self.player = player
+    
+    def show(self):
+        return self.player, self.clan
+
+# Create Warrior contestants
+clan_name = input("Enter your clan name? ")
+human = Warriors(clan_name, player1hand)
+bot = Warriors("Bot", player2hand)
+
+#a, b = human.show()
+#print(b, a.show())
