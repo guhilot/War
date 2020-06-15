@@ -3,7 +3,7 @@
 
 import random
 
-card_suit = ['♠︎','♣︎','♥︎','♦︎']
+card_suit = ['H','D','C','S']
 card_weight = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
 year = 0 #total number of years the game lasts
 years_of_war = 0 #total number of wars
@@ -13,9 +13,6 @@ cont = '' #stores input from user if they want to continue to next round
 reshuffle = ''  #stores input from user if they want to continue to next round
 flag = 0  #acts like a switch
 
-#print(card_suit)
-#print(card_weight)
-
 class cardDeck:
     # Initilize a new deck of cards
     def __init__(self):
@@ -23,25 +20,21 @@ class cardDeck:
         for suit in card_suit:
             for weight in card_weight:
                 self.cards.append((suit,weight))# assign weights to suit
-        #print(self.cards)
     
     # Shuffle the new deck to randomize cards
     def shuffleDeck(self):
         print("Shuffeling")
         random.shuffle(self.cards)
-        #print(self.cards)
 
     # returns two equally divided hands
     def serveCards(self):
         split1 = self.cards[:26]
         split2 = self.cards[26:]
-        #print(self.cards)
         return (split1,split2)
 
 card_deck = cardDeck() #creates a deck of cards
 card_deck.shuffleDeck() #call the shuffle fn to shuffle cards
 hand1, hand2 = card_deck.serveCards() #returns two hands of 26 cards each
-#print(hand1)
 
 class playerHand():
     def __init__(self, hand):
@@ -89,18 +82,21 @@ class Warriors():
 player1hand = playerHand(hand1)
 player2hand = playerHand(hand2)
 
-#print(player1hand.show())
-#print(player2hand.show())
-
 # Create Warrior contestants and assigns them a hand
 clan_name = input("Enter your clan name? ") # asks player for their clan name
 human = Warriors(clan_name, player1hand) #creates your team
 bot = Warriors("Bot", player2hand) # creates computer team/ second player team needs to be
                                    # modified to accept user input
 
-#print(human.standingArmy())
 cont = input(f'Do you want to enter arena? press enter to accept \n') # asks user if they want to start playing 
                                                                       # Enter will start the game any other key will exit
+
+#adds all the popped cards and facedown card to battlefield for winner grabs
+def populate_battleGround():
+    battle_ground.extend(botReinforcements)
+    battle_ground.extend(humanReinforcements)
+    battle_ground.append(botPlay)
+    battle_ground.append(humanPlay)
 
 while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #checks for user input and if player has cards to play turn with
     
@@ -130,13 +126,11 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
     #there is a potential for war without reinforcements
     #to back up during war
     if len(human.player.hand) == 0 or len(human.player.hand) == 1:
-        #print(human.player.show()) # View remaining cards
         flag = 1 # condition breaker
         bot.player.hand.extend(human.player.hand) # takes all remaining warriors
         human.player.hand = []
         print(f'{human.clan} surrenders to the mighty {bot.clan}')
     elif len(bot.player.hand) == 0 or len(bot.player.hand) == 1:
-        #print(bot.player.show()) # View remaining cards
         flag = 1
         human.player.hand.extend(bot.player.hand)
         bot.player.hand = []
@@ -155,8 +149,6 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
         battle_ground.append(human_warrior)
         battle_ground.append(bot_warrior)
 
-        #print(human_warrior[1], bot_warrior[1])
-
         #gets the value of the card (2 to A) and stores it in variable
         warriorPower = human_warrior[1]
         botPower = bot_warrior[1]
@@ -164,6 +156,7 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
     #if the cards are of equal weight
     if warriorPower == botPower:
         while warriorPower == botPower : #this while loop is to encounter another round of equal weight cards where players enter a 2nd,3rd .. round of war
+            
             years_of_war += 1
 
             print(f'{human.clan} and the {bot.clan} cannot come to an agreement\n')
@@ -206,21 +199,13 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
             #check and see who has staronger card by getting index in list
             if flag == 0 and card_weight.index(humanPlay[1]) < card_weight.index(botPlay[1]):
                 print(f'{bot.clan} wins, they take the reinforcements \n')
-                #all popped cards are added back to to holding list which goes to winner
-                battle_ground.extend(botReinforcements) # list
-                battle_ground.extend(humanReinforcements) # list
-                battle_ground.append(botPlay) # tuple
-                battle_ground.append(humanPlay) # tuple
+                populate_battleGround() #all popped cards are added back to to holding list which goes to winner
                 warriorPower = -1 #as no duplicates in war card exist reinitialize to break loop
                 for soldier in battle_ground:
                     bot.player.plunder(soldier) # insert to the start of the list (hand) to avoid immidiate reuse as cards are being popped from end of list
             elif flag == 0 and card_weight.index(humanPlay[1]) > card_weight.index(botPlay[1]):
                 print(f'{human.clan} wins, we take the reinforcements \n')
-                #all popped cards are added back to to holding list which goes to winner
-                battle_ground.extend(botReinforcements)
-                battle_ground.extend(humanReinforcements)
-                battle_ground.append(botPlay)
-                battle_ground.append(humanPlay)
+                populate_battleGround()#all popped cards are added back to to holding list which goes to winner
                 warriorPower = -1
                 for soldier in battle_ground:
                     human.player.plunder(soldier) # insert to the start of the list (hand) to avoid immidiate reuse as cards are being popped from end of list
@@ -229,10 +214,7 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
                 #and update comparison condition with current weights to do another 
                 #loop and get more cards for nth round of war
                 print("Send in more reinforcements, both armies are equally strong \n")
-                battle_ground.extend(botReinforcements)
-                battle_ground.extend(humanReinforcements)
-                battle_ground.append(botPlay)
-                battle_ground.append(humanPlay)
+                populate_battleGround()
                 warriorPower = humanPlay[1]
                 botPower = botPlay[1] # updating loop condition parameters
             else:
