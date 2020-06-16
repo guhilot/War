@@ -245,4 +245,3 @@ if len(human.player.hand) > len(bot.player.hand):
     print(f'{human.clan} wins')
 else:
     print(f'{bot.clan} wins')
-

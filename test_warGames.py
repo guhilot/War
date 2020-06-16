@@ -6,8 +6,6 @@ from warGames import Warriors
 
 class TestWarGames(unittest.TestCase):
 
-    card_suit = ['H','D','C','S']
-    card_weight = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
 
     def test_serveCards_returns_26Cards_for_EachPlayer(self):
         deck = cardDeck()
