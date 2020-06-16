@@ -7,8 +7,8 @@ card_suit = ['H','D','C','S']
 card_weight = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
 year = 0 #total number of years the game lasts
 years_of_war = 0 #total number of wars
-botWins = 0 #total wins throughout the game
-humanWins = 0 #total wins throughout the game
+botWins = []
+humanWins = []
 cont = '' #stores input from user if they want to continue to next round
 reshuffle = ''  #stores input from user if they want to continue to next round
 flag = 0  #acts like a switch
@@ -99,7 +99,8 @@ def populate_battleGround():
     battle_ground.append(humanPlay)
 
 while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #checks for user input and if player has cards to play turn with
-    
+    print("BotWins", botWins)
+    print("HumanWins",humanWins)
     year += 1  # year counts the number of rounds the game lasts
 
     #cont = input(f'Do you want to enter arena again? press enter to accept ')
@@ -126,15 +127,26 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
     #there is a potential for war without reinforcements
     #to back up during war
     if len(human.player.hand) == 0 or len(human.player.hand) == 1:
-        flag = 1 # condition breaker
-        bot.player.hand.extend(human.player.hand) # takes all remaining warriors
-        human.player.hand = []
-        print(f'{human.clan} surrenders to the mighty {bot.clan}')
+
+        if len(humanWins) != 0:
+            human.player.hand.extend(humanWins)
+            human.player.shuffleHand()
+            humanWins = []
+        else:
+            flag = 1 # condition breaker
+            bot.player.hand.extend(human.player.hand) # takes all remaining warriors
+            human.player.hand = []
+            print(f'{human.clan} surrenders to the mighty {bot.clan}')
     elif len(bot.player.hand) == 0 or len(bot.player.hand) == 1:
-        flag = 1
-        human.player.hand.extend(bot.player.hand)
-        bot.player.hand = []
-        print(f'{bot.clan} surrenders to the mighty {human.clan}\n')
+        if len(botWins) != 0:
+            bot.player.hand.extend(botWins)
+            bot.player.shuffleHand()
+            botWins = []
+        else:
+            flag = 1
+            human.player.hand.extend(bot.player.hand)
+            bot.player.hand = []
+            print(f'{bot.clan} surrenders to the mighty {human.clan}\n')
     else:
         #if the user has enough cards
         #battle_ground is the arena where negotiations or wars take place
@@ -175,18 +187,28 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
             #the player cannot win the war and has to surrender by giving up card
             #if they have enough cards to fight the war one card from each is taken out for
             #comparison
-            if len(humanReinforcements) == 0 or len(humanReinforcements) == 1: 
-                print("The human race has been taken over by the bots \n")
-                flag = 1
-                bot.player.hand.extend(human.player.hand)
-                bot.player.hand.extend(battle_ground)
-                human.player.hand = []
+            if len(humanReinforcements) == 0 or len(humanReinforcements) == 1:
+                if len(humanWins) != 0:
+                    human.player.hand.extend(humanWins)
+                    human.player.shuffleHand()
+                    humanWins = []
+                else: 
+                    print("The human race has been taken over by the bots \n")
+                    flag = 1
+                    bot.player.hand.extend(human.player.hand)
+                    bot.player.hand.extend(battle_ground)
+                    human.player.hand = []
             elif len(botReinforcements) == 0 or len(botReinforcements) == 1:
-                print("The bots are no match to human intelligence \n")
-                flag = 1
-                human.player.hand.extend(bot.player.hand)
-                human.player.hand.extend(battle_ground)
-                bot.player.hand = []
+                if len(botWins) != 0:
+                    bot.player.hand.extend(botWins)
+                    bot.player.shuffleHand()
+                    botWins = []
+                else:
+                    print("The bots are no match to human intelligence \n")
+                    flag = 1
+                    human.player.hand.extend(bot.player.hand)
+                    human.player.hand.extend(battle_ground)
+                    bot.player.hand = []
             else:
                 print("Let the reinforcements clash with the enemy \n")
                 humanPlay = humanReinforcements.pop()
@@ -201,14 +223,16 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
                 print(f'{bot.clan} wins, they take the reinforcements \n')
                 populate_battleGround() #all popped cards are added back to to holding list which goes to winner
                 warriorPower = -1 #as no duplicates in war card exist reinitialize to break loop
-                for soldier in battle_ground:
-                    bot.player.plunder(soldier) # insert to the start of the list (hand) to avoid immidiate reuse as cards are being popped from end of list
+                # for soldier in battle_ground:
+                #     bot.player.plunder(soldier) # insert to the start of the list (hand) to avoid immidiate reuse as cards are being popped from end of list
+                botWins.extend(battle_ground)
             elif flag == 0 and card_weight.index(humanPlay[1]) > card_weight.index(botPlay[1]):
                 print(f'{human.clan} wins, we take the reinforcements \n')
                 populate_battleGround()#all popped cards are added back to to holding list which goes to winner
                 warriorPower = -1
-                for soldier in battle_ground:
-                    human.player.plunder(soldier) # insert to the start of the list (hand) to avoid immidiate reuse as cards are being popped from end of list
+                # for soldier in battle_ground:
+                #     human.player.plunder(soldier) # insert to the start of the list (hand) to avoid immidiate reuse as cards are being popped from end of list
+                humanWins.extend(battle_ground)
             elif flag == 0 and card_weight.index(humanPlay[1]) == card_weight.index(botPlay[1]):
                 #if war cards have the same weights add all cards to holding list
                 #and update comparison condition with current weights to do another 
@@ -224,12 +248,14 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
         #compare card weight from list to get winner and then add cards to hand
         if card_weight.index(human_warrior[1]) > card_weight.index(bot_warrior[1]):
             print(f'{human.clan} wins, take soldier as tribute \n')
-            for j in battle_ground:
-                human.player.plunder(j)
+            # for j in battle_ground:
+            #     human.player.plunder(j)
+            humanWins.extend(battle_ground)
         elif card_weight.index(human_warrior[1]) < card_weight.index(bot_warrior[1]):
             print(f'{bot.clan} wins, takes soldier as tribute\n')
-            for j in battle_ground:
-                bot.player.plunder(j)
+            # for j in battle_ground:
+            #     bot.player.plunder(j)
+            botWins.extend(battle_ground)
 
     if human.standingArmy() == 0 or bot.standingArmy() == 0:
         cont = 'n'
