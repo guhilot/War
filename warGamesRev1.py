@@ -134,28 +134,6 @@ def populate_battleGround():
     battle_ground.append(botPlay)
     battle_ground.append(humanPlay)
 
-# this function checks number of cards in players hands, if 0 cards in hand, then it checks if they
-# have a winning pile to use, if so take the winning pile shuffle and play
-def checkPlayerHandCount():
-    if len(human.player.hand) == 0 and len(bot.player.hand) == 0:
-        if len(humanWins) != 0 and len(botWins) != 0:
-            human.player.hand.extend(humanWins)
-            human.player.shuffleHand()
-            humanWins = []
-            bot.player.hand.extend(botWins)
-            bot.player.shuffleHand()
-            botWins = []
-        elif len(bot.player.hand) == 0:
-            if len(botWins) != 0:
-                bot.player.hand.extend(botWins)
-                bot.player.shuffleHand()
-                botWins = []
-        elif len(human.player.hand) == 0:
-            if len(humanWins) != 0:
-                human.player.hand.extend(humanWins)
-                human.player.shuffleHand()
-                humanWins = []
-
 def humanBackUpCheck(humanWins):
     human.player.hand.extend(humanWins)
     human.player.shuffleHand()
@@ -224,22 +202,9 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0:
     elif len(human.player.hand) == 0: 
         if len(humanWins) != 0:
             humanWins = humanBackUpCheck(humanWins)
-        else:
-            # condition breaker
-            flag = 1 
-            # takes all remaining warriors
-            bot.player.hand.extend(human.player.hand) 
-            human.player.hand = []
-            print(f'{human.clan} surrenders to the mighty {bot.clan}')
     elif len(bot.player.hand) == 0:
         if len(botWins) != 0:
             botWins = botBackUpCheck(botWins)
-        else:
-            flag = 1
-            human.player.hand.extend(bot.player.hand)
-            bot.player.hand = []
-            print(f'{bot.clan} surrenders to the mighty {human.clan}\n')
-    
     #if the cards are of equal weight
     if warriorPower == botPower and flag == 0:
         #this while loop is to encounter another round of equal weight cards where players enter a 2nd,3rd .. round of war
@@ -326,21 +291,9 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0:
                 elif len(human.player.hand) == 0: #or len(human.player.hand) == 1:
                     if len(humanWins) != 0:
                         humanWins = humanBackUpCheck(humanWins)
-                    else:
-                        flag = 1 # condition breaker
-                        bot.player.hand.extend(human.player.hand) # takes all remaining warriors
-                        human.player.hand = []
-                        print(f'{human.clan} surrenders to the mighty {bot.clan}')
                 elif len(bot.player.hand) == 0: #or len(bot.player.hand) == 1:
                     if len(botWins) != 0:
                         botWins = botBackUpCheck(botWins)
-                    else:
-                        flag = 1
-                        human.player.hand.extend(bot.player.hand)
-                        bot.player.hand = []
-                        print(f'{bot.clan} surrenders to the mighty {human.clan}\n')
-
-
 
             #displays the new cards for war comparison to break tie
             print(f'{human.clan} reinforcement is {humanPlay} \n')
@@ -354,7 +307,7 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0:
                 #as no duplicates in war card exist reinitialize to break loop
                 warriorPower = -1 
                 botWins.extend(battle_ground)
-                checkPlayerHandCount()
+                #checkPlayerHandCount()
 
             elif flag == 0 and card_weight.index(humanPlay[1]) > card_weight.index(botPlay[1]):
                 print(f'{human.clan} wins, we take the reinforcements \n')
@@ -362,7 +315,7 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0:
                 populate_battleGround()
                 warriorPower = -1
                 humanWins.extend(battle_ground)
-                checkPlayerHandCount()
+                #checkPlayerHandCount()
             elif flag == 0 and card_weight.index(humanPlay[1]) == card_weight.index(botPlay[1]):
                 #if war cards have the same weights add all cards to holding list
                 #and update comparison condition with current weights to do another 
@@ -382,11 +335,51 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0:
         if card_weight.index(human_warrior[1]) > card_weight.index(bot_warrior[1]):
             print(f'{human.clan} wins, take soldier as tribute \n')
             humanWins.extend(battle_ground)
-            checkPlayerHandCount()
+
+            # this condition checks number of cards in players hands, if 0 cards in hand, then it checks if they
+            # have a winning pile to use, if so take the winning pile shuffle and play
+            if len(human.player.hand) == 0 and len(bot.player.hand) == 0:
+                if len(humanWins) != 0 and len(botWins) != 0:
+                    human.player.hand.extend(humanWins)
+                    human.player.shuffleHand()
+                    humanWins = []
+                    bot.player.hand.extend(botWins)
+                    bot.player.shuffleHand()
+                    botWins = []
+            elif len(bot.player.hand) == 0:
+                if len(botWins) != 0:
+                    bot.player.hand.extend(botWins)
+                    bot.player.shuffleHand()
+                    botWins = []
+            elif len(human.player.hand) == 0:
+                if len(humanWins) != 0:
+                    human.player.hand.extend(humanWins)
+                    human.player.shuffleHand()
+                    humanWins = []
         elif card_weight.index(human_warrior[1]) < card_weight.index(bot_warrior[1]):
             print(f'{bot.clan} wins, takes soldier as tribute\n')
             botWins.extend(battle_ground)
-            checkPlayerHandCount()
+
+            # this condition checks number of cards in players hands, if 0 cards in hand, then it checks if they
+            # have a winning pile to use, if so take the winning pile shuffle and play
+            if len(human.player.hand) == 0 and len(bot.player.hand) == 0:
+                if len(humanWins) != 0 and len(botWins) != 0:
+                    human.player.hand.extend(humanWins)
+                    human.player.shuffleHand()
+                    humanWins = []
+                    bot.player.hand.extend(botWins)
+                    bot.player.shuffleHand()
+                    botWins = []
+            elif len(bot.player.hand) == 0:
+                if len(botWins) != 0:
+                    bot.player.hand.extend(botWins)
+                    bot.player.shuffleHand()
+                    botWins = []
+            elif len(human.player.hand) == 0:
+                if len(humanWins) != 0:
+                    human.player.hand.extend(humanWins)
+                    human.player.shuffleHand()
+                    humanWins = []
             
     if human.standingArmy() == 0 or bot.standingArmy() == 0:
         cont = 'n'
