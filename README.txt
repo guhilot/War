@@ -1,5 +1,10 @@
 *************READ ME*************
 
+This project has two versions
+
+Version 1.0 : warGames.py
+Version 1.1 : warGamesRev1.py
+
 1) After running and starting the game
 
 2) Press enter for a new round or any key to exit the game
@@ -11,6 +16,10 @@
    card takes all, however, if there is another tie the war continues and the players draw two more cards
    and only use one to compare and break tie, this process goes on till a winner is decided and hence the
    winner take all cards on table
+
+   For Version 1.0 : winning cards are inserted to the start of the current hand being played
+   For Version 1.1 : winning cards are stored into a seperate list and not inserted into the playing hand
+   on finishing cards in hand the player then takes the pile of won cards shuffles and starts playing again
 
 5) In the event if a user throws one card which results in war and only has one card in hand the game is 
    declared in favor of team who can provide all cards for war to take place ie. two cards
@@ -32,7 +41,9 @@ use React to give this game a UI on the web where two people sitting anywhere in
 I would also add few more unit tests to make sure it is robust and that I am doing my part, as it is essential for
 a good programmer to write his/her own unit tests before walking away, this coding challenge made me brush up
 on my python skills and I enjoyed every minute coding with it, I shall do a deep dive into python too and 
-redo this assignment to see where I could do better and cut down on some of the complexity
+redo this assignment to see where I could do better and cut down on some of the complexity, I am currently also 
+working on the feature in which the user puts his winning cards at the bottom of his/her stack, when the face card 
+becomes visible, the user shuffles his cards and continues, 
 
 Assumptions:
 1)If a user does not have enough cards for a war round, the game is declared in favour of the team with most 
@@ -59,3 +70,7 @@ and exits out of the loop and proceed to play in the normal flow
 time, where players cards are alligned in such a way where each player wins in every alternate round causing their armies
 to have the same number of fighters, I included a count and at every 50 turns the user gets a prompt to shuffle if they feel
 there is a need, it definetely helps
+
+4)Player has 3 cards in hand and 0 winnings in pile, throws one card causing a war, player has to now put down both cards 
+in hand, when player uses one of his cards from the 2 card entry and this causes another war, at this point, the game is 
+surrendered to the other player

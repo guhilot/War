@@ -106,12 +106,14 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
 
     #option to shuffle at intervals of 50 turns user can shuffle or deny shuffling
     if year in range(50,5000,50):
-        reshuffle = input("Lets re-arrange our forces ('y' to reshuffle existing hand) \n")
-
-    #if user agrees to shuffle both player cards get shuffled
-    if reshuffle == 'y':
+        #reshuffle = input("Lets re-arrange our forces ('y' to reshuffle existing hand) \n")
         human.player.shuffleHand()
         bot.player.shuffleHand()
+
+    #if user agrees to shuffle both player cards get shuffled
+    # if reshuffle == 'y':
+    #     human.player.shuffleHand()
+    #     bot.player.shuffleHand()
 
     reshuffle = '' #reinitialize to avoid shuffling at every turn
 
@@ -209,7 +211,6 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
                 warriorPower = -1
                 for soldier in battle_ground:
                     human.player.plunder(soldier) # insert to the start of the list (hand) to avoid immidiate reuse as cards are being popped from end of list
-                
             elif flag == 0 and card_weight.index(humanPlay[1]) == card_weight.index(botPlay[1]):
                 #if war cards have the same weights add all cards to holding list
                 #and update comparison condition with current weights to do another 
@@ -227,13 +228,11 @@ while cont == '' and human.standingArmy() != 0 and bot.standingArmy() != 0: #che
             print(f'{human.clan} wins, take soldier as tribute \n')
             for j in battle_ground:
                 human.player.plunder(j)
-            
         elif card_weight.index(human_warrior[1]) < card_weight.index(bot_warrior[1]):
             print(f'{bot.clan} wins, takes soldier as tribute\n')
             for j in battle_ground:
                 bot.player.plunder(j)
-            
-
+        
     if human.standingArmy() == 0 or bot.standingArmy() == 0:
         cont = 'n'
     else:
