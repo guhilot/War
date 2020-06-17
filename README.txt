@@ -3,7 +3,7 @@
 This project has two versions
 
 Version 1.0 : warGames.py
-Version 1.1 : warGamesRev1.py
+Version 1.1 : warGamesRev1.py : This version is more accurate to how the game should be played
 
 1) After running and starting the game
 
@@ -45,7 +45,7 @@ redo this assignment to see where I could do better and cut down on some of the 
 working on the feature in which the user puts his winning cards at the bottom of his/her stack, when the face card 
 becomes visible, the user shuffles his cards and continues, 
 
-Assumptions:
+Assumptions: for Version 1.0
 1)If a user does not have enough cards for a war round, the game is declared in favour of the team with most 
 cards as they can fulfill the war rules
 
@@ -58,7 +58,7 @@ Coner cases:
 1)User does not have enough cards for war: When this scenario occurs, I had the option of having the user throw 
 the only card in hand for war, however on one hand that is not fair and on the other hand what if there is another 
 tie, hence the player is in a bad situation, the strategy I used was for the user in this case to surrender to the 
-other player
+other player (V 1.0)
 
 2)War happens contiguously(back to back): In this scenario when there is a tie in the second.. round, ie both players 
 throw cards with same weight, I needed to create a seperate loop inside the main loop to handle this as there 
@@ -66,11 +66,9 @@ could be 'n' number of continuous wars, hence I created a while loop whose condi
 current war card values, if they were equal weights loop again and have a war, if they were different condition fails 
 and exits out of the loop and proceed to play in the normal flow
 
-3)Cards align such that there is an endless back and forth: In a case as such, the game can go on for a really really long
-time, where players cards are alligned in such a way where each player wins in every alternate round causing their armies
-to have the same number of fighters, I included a count and at every 50 turns the user gets a prompt to shuffle if they feel
-there is a need, it definetely helps
-
 4)Player has 3 cards in hand and 0 winnings in pile, throws one card causing a war, player has to now put down both cards 
 in hand, when player uses one of his cards from the 2 card entry and this causes another war, at this point, the game is 
-surrendered to the other player
+surrendered to the other player(V 1.1)
+
+5)Player throws his last card and loses, created a condition to check if the player has any winning cards, if so, shuffle 
+and continues playing
